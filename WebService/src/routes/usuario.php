@@ -28,7 +28,7 @@ $app->get('/api/usuario/getUsuarios', function(Request $request, Response $respo
                  $myArray[] = array(
                      'id_user' => $row["id_user"],
                      'email' => $row["email"],
-                     'password' => $row["passwd"],
+                     'passwd' => $row["passwd"],
                  );
              }
          
@@ -65,7 +65,7 @@ $app->get('/api/usuario/getUsuarioById/{id}', function(Request $request, Respons
                  $myArray[] = array(
                      'id_user' => $row["id_user"],
                      'email' => $row["email"],
-                     'password' => $row["passwd"],
+                     'passwd' => $row["passwd"],
                  );
              }
          
@@ -100,7 +100,7 @@ $app->get('/api/usuario/getUsuarioByEmail/{email}', function(Request $request, R
              $myArray[] = array(
                  'id_user' => $row["id_user"],
                  'email' => $row["email"],
-                 'password' => $row["passwd"],
+                 'passwd' => $row["passwd"],
              );
          }
      
@@ -191,7 +191,7 @@ $app->put('/api/usuario/update',function (Request $request, Response $response){
     $conn = $db->openConexionDB();
 
     $id = $request->getParsedBody()['id_user'];
-    $password = $request->getParsedBody()['password'];
+    $password = $request->getParsedBody()['passwd'];
 
     // Validamos
     if($validation->isBlank($id)
