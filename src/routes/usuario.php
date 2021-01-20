@@ -226,7 +226,7 @@ $app->post('/api/usuario/login', function(Request $request, Response $response){
        $conn = $db->openConexionDB();
    
        $email = $request->getParsedBody()['email'];
-       $password = $request->getParsedBody()['password'];
+       $password = $request->getParsedBody()['passwd'];
    
        $sql = "SELECT * FROM usuario WHERE email =  '".$email. "' AND passwd = '".$password."' ";
 
@@ -242,7 +242,7 @@ $app->post('/api/usuario/login', function(Request $request, Response $response){
             $myArray[] = array(
                 'id_user' => $row["id_user"],
                 'email' => $row["email"],
-                'password' => $row["passwd"],
+                'passwd' => $row["passwd"],
                
             );
         }

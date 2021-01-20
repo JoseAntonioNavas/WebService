@@ -123,6 +123,8 @@ $app->get('/api/detalles-usuarioById/{id}',function(Request $request, Response $
 
 $app->post('/api/detalles-usuario/new',function(Request $request, Response $response){
 
+  
+    
     $validation = new Valida();
     $db = new Conexion();
     $conn = $db->openConexionDB();
