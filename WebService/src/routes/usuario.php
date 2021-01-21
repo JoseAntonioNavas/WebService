@@ -123,7 +123,7 @@ $app->post('/api/usuario/new', function(Request $request,Response $response){
             $conn = $db->openConexionDB();
                     
             $email = $request->getParsedBody()['email'];
-            $password = $request->getParsedBody()['password'];
+            $password = $request->getParsedBody()['passwd'];
 
             $sql1 = "SELECT * FROM usuario WHERE email =  '" . $email. "'";
     
@@ -183,9 +183,8 @@ $app->delete('/api/usuario/deleteById/{id}' ,function (Request $request,Response
 });
 
 
-$app->put('/api/usuario/update',function (Request $request, Response $response){
+$app->put('/api/usuario/updatePassword',function (Request $request, Response $response){
 
-    $validation = new Valida();
     $db = new Conexion();
 
     $conn = $db->openConexionDB();
@@ -193,19 +192,11 @@ $app->put('/api/usuario/update',function (Request $request, Response $response){
     $id = $request->getParsedBody()['id_user'];
     $password = $request->getParsedBody()['passwd'];
 
-    // Validamos
-    if($validation->isBlank($id)
-    || $validation->isBlank($password) ){
 
-        echo $response->withStatus(400,"id_user o password están vacios");
-
-    }else{
-
-        try {
+    try {
             $sql = "UPDATE usuario SET passwd = '".$password."' WHERE id_user = " .$id;
             $result = $conn->query($sql);
             
-            var_dump($result);
             echo $response->withStatus(200,"OK");
 
         } catch (\Throwable $th) {
@@ -213,7 +204,7 @@ $app->put('/api/usuario/update',function (Request $request, Response $response){
             echo $response->withStatus(400,"Error al actualizar el usuario");
         }
       
-    }
+    
 
     $db->closeConexionDB($conn);
 });
