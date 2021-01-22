@@ -41,7 +41,6 @@ $app->get('/api/rol/getRol', function(Request $request, Response $response){
 }); 
 
 
-
 $app->get('/api/rol/getRolById/{id}', function(Request $request, Response $response){
     $db = new conexion();
 
@@ -49,39 +48,71 @@ $app->get('/api/rol/getRolById/{id}', function(Request $request, Response $respo
 
     $id = $request->getAttribute('id');
 
-    // Validamos id
-    if(is_numeric($id) == false){
-        $id = -1;
-    }
 
-    
-    $sql = "SELECT * FROM roles where id_rol = " .$id;
-    $result = $conn->query($sql);
- 
-    if(mysqli_num_rows($result) == 0){
- 
-     $myArray = [];
+       
+        $sql = "SELECT * FROM roles where id_rol = " .$id;
+        $result = $conn->query($sql);
      
-    }else{
- 
-     while($row = mysqli_fetch_assoc($result)){
-         $myArray[] = array(
-             'id_rol' => $row["id_rol"],
-             'nombre_rol' => $row["nombre_rol"]
-         );
-     }
- 
-    }
+        if(mysqli_num_rows($result) == 0){
+     
+         $myArray = [];
+         
+        }else{
+     
+         while($row = mysqli_fetch_assoc($result)){
+             $myArray[] = array(
+                 'id_rol' => $row["id_rol"],
+                 'nombre_rol' => $row["nombre_rol"]
+             );
+         }
+     
+        }
+
+    echo  $salidaJSON = json_encode($myArray);
+        
     
-    
-   $salidaJSON = json_encode($myArray);
- 
-   return $salidaJSON;
+
   $db->closeConexionDB($conn);
 
 
 }); 
 
+
+$app->get('/api/rol/getRolByName/{name}', function(Request $request, Response $response){
+    $db = new conexion();
+
+    $conn = $db->openConexionDB();
+
+    $name = $request->getAttribute('name');
+
+
+       
+        $sql = "SELECT * FROM roles where nombre_rol = '" .$name ."'";
+        $result = $conn->query($sql);
+     
+        if(mysqli_num_rows($result) == 0){
+     
+         $myArray = [];
+         
+        }else{
+     
+         while($row = mysqli_fetch_assoc($result)){
+             $myArray[] = array(
+                 'id_rol' => $row["id_rol"],
+                 'nombre_rol' => $row["nombre_rol"]
+             );
+         }
+     
+        }
+
+    echo  $salidaJSON = json_encode($myArray);
+        
+    
+
+  $db->closeConexionDB($conn);
+
+
+}); 
 
 $app->post('/api/rol/new',function (Request $request, Response $response){
     $db = new conexion();
