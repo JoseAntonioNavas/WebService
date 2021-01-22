@@ -1,10 +1,8 @@
-<?php
+<?php  header('Content-Type: charset=utf-8');
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-
- 
 
 
 $app->get('/api/usuario/getUsuarios', function(Request $request, Response $response){
@@ -132,15 +130,29 @@ $app->post('/api/usuario/new', function(Request $request,Response $response){
            // Validamos
             if(($validation->validateEmail($email) == false)){
 
-                echo $response->withStatus(400,"Email no válido");
+                $myArray[] = array(
+                    'status' => $response->getStatusCode(),
+                    'msg' => "Email no válido"
+                );
+                echo json_encode($myArray);
 
             }elseif($validation->isBlank($password)){
 
-                echo $response->withStatus(400,"La contraseña es obligatoria");
+                $myArray[] = array(
+                    'status' => $response->getStatusCode(),
+                    'msg' => "Clave obligatoria"
+                );
+                echo json_encode($myArray);
+               
 
             }elseif( mysqli_num_rows($resultEmail) != 0){
 
-                echo $response->withStatus(400,"Email ya registrado");
+                $myArray[] = array(
+                    'status' => $response->getStatusCode(),
+                    'msg' => "Este Email ya ha sido registrado"
+                );
+                echo json_encode($myArray);
+                
 
             }else{
                 $sql = "INSERT INTO usuario (id_user,email,passwd) VALUES (null, '$email' , '$password')";
@@ -148,10 +160,20 @@ $app->post('/api/usuario/new', function(Request $request,Response $response){
                 try {
                     mysqli_query($conn,$sql);
                     
-                    echo $response->withStatus(200,"ok");
+                    $myArray[] = array(
+                        'status' => $response->getStatusCode(),
+                        'msg' => "OK"
+                    );
+                    echo json_encode($myArray);
 
                 } catch (\Throwable $th) {
-                    echo $response->withStatus(400,"No se ha podido crear el usuario");
+
+                    $myArray[] = array(
+                        'status' => $response->getStatusCode(),
+                        'msg' => "Error en la consulta"
+                    );
+                    echo json_encode($myArray);
+                    
                 }
              
             
@@ -172,10 +194,22 @@ $app->delete('/api/usuario/deleteById/{id}' ,function (Request $request,Response
         $sql = "DELETE FROM usuario where id_user = " .$id;
         $result = $conn->query($sql);
 
-        echo $response->withStatus(200,"OK");
+        $myArray[] = array(
+            'status' => $response->getStatusCode(),
+            'msg' => "OK"
+        );
+        echo json_encode($myArray);
+ 
 
     } catch (\Throwable $th) {
-        echo $response->withStatus(400,"Error al borrar el usuario");
+
+        $myArray[] = array(
+            'status' => $response->getStatusCode(),
+            'msg' => "Error al hacer la consulta"
+        );
+        echo json_encode($myArray);
+
+       
     }
 
     $db->closeConexionDB($conn);
@@ -185,6 +219,7 @@ $app->delete('/api/usuario/deleteById/{id}' ,function (Request $request,Response
 
 $app->put('/api/usuario/updatePassword',function (Request $request, Response $response){
 
+    $validation = new Valida();
     $db = new Conexion();
 
     $conn = $db->openConexionDB();
@@ -193,19 +228,38 @@ $app->put('/api/usuario/updatePassword',function (Request $request, Response $re
     $password = $request->getParsedBody()['passwd'];
 
 
-    try {
+    if($validation->isBlank($password)){
+
+        $myArray[] = array(
+            'status' => $response->getStatusCode(),
+            'msg' => "Clave obligatoria"
+        );
+        echo json_encode($myArray);
+        
+
+    }else{
+        try {
             $sql = "UPDATE usuario SET passwd = '".$password."' WHERE id_user = " .$id;
             $result = $conn->query($sql);
             
-            echo $response->withStatus(200,"OK");
+           
+            $myArray[] = array(
+                'status' => $response->getStatusCode(),
+                'msg' => "OK"
+            );
+            echo json_encode($myArray);
 
         } catch (\Throwable $th) {
             
-            echo $response->withStatus(400,"Error al actualizar el usuario");
+           
+        $myArray[] = array(
+            'status' => $response->getStatusCode(),
+            'msg' => "Error al hacer la consulta"
+        );
+        echo json_encode($myArray);
         }
-      
-    
-
+    }
+  
     $db->closeConexionDB($conn);
 });
 
