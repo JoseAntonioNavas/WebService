@@ -4,9 +4,6 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
 
-
-
-
 $app->get('/api/rol/getRol', function(Request $request, Response $response){
     $db = new conexion();
 
@@ -124,7 +121,11 @@ $app->post('/api/rol/new',function (Request $request, Response $response){
    
     //Validamos que no este vacio
     if($validation->isBlank($nombre_rol)){
-        echo $response->withStatus(400,"Nombre de rol no puede estar vacio");
+        $myArray[] = array(
+            'status' => $response->getStatusCode(),
+            'msg' => "Nombre de rol no puede estar vacio"
+        );
+        echo json_encode($myArray);
     }else{
 
         $sqlUsuarioExiste = "SELECT * FROM roles where nombre_rol = '$nombre_rol' "; 
@@ -138,13 +139,27 @@ $app->post('/api/rol/new',function (Request $request, Response $response){
             if(mysqli_num_rows($result) == 0){
     
                 mysqli_query($conn,$sql);
-            
-                echo $response->withStatus(200,"OK");
+        
+                $myArray[] = array(
+                    'status' => $response->getStatusCode(),
+                    'msg' => "OK"
+                );
+                echo json_encode($myArray);
+
             }else{
-                echo $response->withStatus(400,"Ya existe un rol con este nombre");
+                $myArray[] = array(
+                    'status' => $response->getStatusCode(),
+                    'msg' => "Ya existe un rol con este nombre"
+                );
+                echo json_encode($myArray);
             }
         } catch (\Throwable $th) {
-            echo $response->withStatus(400,"Error al ejecutar la consulta");
+
+            $myArray[] = array(
+                'status' => $response->getStatusCode(),
+                'msg' => "Error al ejecutar la consulta"
+            );
+            echo json_encode($myArray);
         }
 
         
@@ -155,6 +170,7 @@ $app->post('/api/rol/new',function (Request $request, Response $response){
     
 });
 
+
 $app->put('/api/rol/updateById',function (Request $request, Response $response){
     $db = new conexion();
     $validation = new Valida();
@@ -164,9 +180,15 @@ $app->put('/api/rol/updateById',function (Request $request, Response $response){
     $id_rol = $request->getParsedBody()['id_rol'];
     $nombre_rol = $request->getParsedBody()['nombre_rol'];
    
+
     //Validamos que no este vacio
-    if($validation->isBlank($nombre_rol) || $validation->isBlank($id_rol) ){
-        echo $response->withStatus(400,"Campos no pueden estar vacios");
+    if($validation->isBlank($nombre_rol) || $validation->isBlank($id_rol)){
+        
+        $myArray[] = array(
+            'status' => $response->getStatusCode(),
+            'msg' => "Campos no pueden estar vacios"
+        );
+        echo json_encode($myArray);
     }else{
         //Validamos
         try {
@@ -180,19 +202,36 @@ $app->put('/api/rol/updateById',function (Request $request, Response $response){
                     $sql = "UPDATE roles set nombre_rol = '$nombre_rol' where id_rol = $id_rol";
                      mysqli_query($conn,$sql);
                      
-                    echo $conn->affected_rows;
-                    echo $response->withStatus(200,"OK");
+                    $myArray[] = array(
+                        'status' => $response->getStatusCode(),
+                        'msg' => "OK"
+                    );
+                    echo json_encode($myArray);
                     
                 } catch (\Throwable $th) {
-                    echo $response->withStatus(400,"Error al ejecutar la consulta");
+
+                    $myArray[] = array(
+                        'status' => $response->getStatusCode(),
+                        'msg' => "Error al ejecutar la consulta"
+                    );
+                    echo json_encode($myArray);
+
                 }
 
                
             }else{
-                echo $response->withStatus(400,"Ya existe un rol con este nombre");
+                $myArray[] = array(
+                    'status' => $response->getStatusCode(),
+                    'msg' => "Ya existe un rol con este nombre"
+                );
+                echo json_encode($myArray);
             }
         } catch (\Throwable $th) {
-            echo $response->withStatus(400,"Error al ejecutar la consulta");
+            $myArray[] = array(
+                'status' => $response->getStatusCode(),
+                'msg' => "Error al ejecutar la consulta"
+            );
+            echo json_encode($myArray);
         }
 
         
@@ -213,10 +252,18 @@ $app->delete('/api/rol/deleteById/{id}',function (Request $request,Response $res
         $sql = "DELETE FROM roles where id_rol = " .$id;
         $result = $conn->query($sql);
 
-        echo $response->withStatus(200,"OK");
+        $myArray[] = array(
+            'status' => $response->getStatusCode(),
+            'msg' => "OK"
+        );
+        echo json_encode($myArray);
 
     } catch (\Throwable $th) {
-        echo $response->withStatus(400,"Error al borrar el rol");
+        $myArray[] = array(
+            'status' => $response->getStatusCode(),
+            'msg' => "Error al hacer la consulta"
+        );
+        echo json_encode($myArray);
     }
 
     $db->closeConexionDB($conn);
