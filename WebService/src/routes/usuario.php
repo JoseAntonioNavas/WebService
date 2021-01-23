@@ -201,6 +201,11 @@ $app->delete('/api/usuario/deleteById/{id}' ,function (Request $request,Response
         echo json_encode($myArray);
  
 
+           //URL BORRAR DETALLE-USUARIO
+           $urlDeleteUsuario = "http://localhost/vehiculosAPI/WebService/public/api/detalles-usuario/deleteByIdUser/".$id;
+           var_dump(header("Location: ".$urlDeleteUsuario.""));
+           die();
+
     } catch (\Throwable $th) {
 
         $myArray[] = array(

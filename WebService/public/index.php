@@ -18,8 +18,21 @@ require '../src/routes/detalle-usuario.php';
 // Detalles rol
 require '../src/routes/rol.php';
 
+//Vehiculos
+
+// Detalles rol
+require '../src/routes/Vehiculos.php';
+
+// Marca
+require '../src/routes/marca.php';
+
+//Modelo
+require '../src/routes/modelo.php';
 $app->run();
 
+
+// COLOR
+require '../src/routes/color.php';
 
 ?>
 

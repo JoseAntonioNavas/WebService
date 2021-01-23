@@ -1,5 +1,5 @@
-<?php
-
+<?php  header('Content-Type: charset=utf-8');
+ 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
@@ -138,24 +138,117 @@ $app->post('/api/detalles-usuario/new',function(Request $request, Response $resp
 
 
     // Validar
-    
 
-    $sql = "INSERT INTO detalles_usuario (id_detalle_usuario,id_user,nick_user,id_rol,nombre,apellido_1,apellido_2)
-     VALUES (null, $id_user , '$nick_user', $id_rol,'$nombre','$apellido_1','$apellido_2')";
-        
-    try {
-        mysqli_query($conn,$sql);
-        
-        echo $response->withStatus(200,"OK");
+    if($validation->isBlank($id_user) || $validation->isBlank($nick_user) || 
+    $validation->isBlank($id_rol) || $validation->isBlank($nombre) || $validation->isBlank($apellido_1) ){
 
-    } catch (\Throwable $th) {
-        echo $response->withStatus(400,"No se ha podido crear el usuario");
+        $myArray[] = array(
+            'status' => $response->getStatusCode(),
+            'msg' => "Los campos obligatorios no pueden estar vacíos"
+        );
+        echo json_encode($myArray);
+    }else{
+
+        // Para ver si existe el id_rol y id_usuario
+        $sqlRol = "SELECT * FROM roles where id_rol LIKE '".$id_rol."'";
+        $sqlUser = "SELECT * FROM usuario where id_user LIKE '".$id_user."'";
+        $resultRol = $conn->query($sqlRol);
+        $resultUser = $conn->query($sqlUser);
+
+
+        if(mysqli_num_rows($resultRol) == 0 || mysqli_num_rows($resultRol) == false){
+            $myArray[] = array(
+                'status' => $response->getStatusCode(),
+                'msg' => "El id del rol referenciado ya no existe en la base de datos o el ID usuario no es un dato válido"
+            );
+            echo json_encode($myArray);
+         
+        }else if(mysqli_num_rows($resultUser) == 0 || mysqli_num_rows($resultUser)==false){
+            var_dump($resultUser);
+            $myArray[] = array(
+                'status' => $response->getStatusCode(),
+                'msg' => "El ID del usuario referenciado ya no existe en la base de datos o el ID Usuario no es un dato válido"
+            );
+            echo json_encode($myArray);
+        }else{
+
+            // Para ver si ya tenia perfil un ID_USUARIO en la tabla detalles_usuario
+            $sqlExistUsuario= "SELECT * FROM detalles_usuario where id_user = ".$id_user;
+            $resultExisteUsuario = $conn->query($sqlExistUsuario);
+
+            if(mysqli_num_rows($resultExisteUsuario) != 0){
+
+                $myArray[] = array(
+                    'status' => $response->getStatusCode(),
+                    'msg' => "Este Usuario ya existe"
+                );
+                echo json_encode($myArray);
+
+            }else{
+
+                   
+            $sql = "INSERT INTO detalles_usuario (id_detalle_usuario,id_user,nick_user,id_rol,nombre,apellido_1,apellido_2)
+            VALUES (null, $id_user , '$nick_user', $id_rol,'$nombre','$apellido_1','$apellido_2')";
+                
+                try {
+                    mysqli_query($conn,$sql);
+                    
+                    $myArray[] = array(
+                        'status' => $response->getStatusCode(),
+                        'msg' => "OK"
+                    );
+                    echo json_encode($myArray);
+        
+                } catch (\Throwable $th) {
+                    $myArray[] = array(
+                        'status' => $response->getStatusCode(),
+                        'msg' => "Error al realizar la consulta"
+                    );
+                    echo json_encode($myArray);
+                }
+
+            }
+         
+
+        } 
     }
- 
 
     $db->closeConexionDB($conn);
 });
 
+$app->delete('/api/detalles-usuario/deleteByIdUser/{idUser}',function(Request $request, Response $response){
+
+    $db = new Conexion();
+    $conn = $db->openConexionDB();
+
+    $id = $request->getAttribute('idUser');
+
+    try {
+        $sql = "DELETE FROM detalles_usuario where id_user = " .$id;
+        $result = $conn->query($sql);
+
+        $myArray[] = array(
+            'status' => $response->getStatusCode(),
+            'msg' => "OK"
+        );
+        echo json_encode($myArray);
+
+    } catch (\Throwable $th) {
+        $myArray[] = array(
+            'status' => $response->getStatusCode(),
+            'msg' => "Error al hacer la consulta"
+        );
+        
+    }
+});
+
+
+// A ESPERA
+$app->put('/api/detalles-usuario/update',function(Request $request, Response $response){
+
+
+
+});
 
 
 ?>
