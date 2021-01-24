@@ -129,14 +129,14 @@ $app->post('/api/modelo/new',function (Request $request, Response $response){
             if(mysqli_num_rows($result1) != 0){
                 $myArray[] = array(
                     'status' => $response->getStatusCode(),
-                    'msg' => "Este modelo ya está registrado."
+                    'msg' => "Modelo ya registrado."
                 );
                 echo json_encode($myArray);
             }else if(mysqli_num_rows($result) == 0){
 
                 $myArray[] = array(
                     'status' => $response->getStatusCode(),
-                    'msg' => "No hay ninguna marca registrada en nuestra base de datos"
+                    'msg' => "Marca no registrado"
                 );
                 echo json_encode($myArray);
 
@@ -169,4 +169,31 @@ $app->post('/api/modelo/new',function (Request $request, Response $response){
 });
 
 
+
+$app->delete('/api/modelo/deleteByIdMarca/{id}',function(Request $request,Response $response){
+
+    $db = new Conexion();
+    $conn = $db->openConexionDB();
+
+    $id = $request->getAttribute('id');
+
+    try {
+        $sql = "DELETE FROM modelo where id_marca = " .$id;
+        $result = $conn->query($sql);
+
+        $myArray[] = array(
+            'status' => $response->getStatusCode(),
+            'msg' => "OK"
+        );
+        return json_encode($myArray);
+
+    } catch (\Throwable $th) {
+        $myArray[] = array(
+            'status' => $response->getStatusCode(),
+            'msg' => "Error al hacer la consulta"
+        );
+        return json_encode($myArray);
+    }
+    
+});
 ?>

@@ -51,7 +51,15 @@ $app->delete('/api/marca/deleteById/{id}',function(Request $request,Response $re
 
     $id = $request->getAttribute('id');
 
+    // Si borramos la Marca , tenemos que borrar todos los modelos de esa marca 
+    
     try {
+
+        //URL BORRAR 
+        $urlDeleteUsuario = "http://localhost/vehiculosAPI/WebService/public/api/modelo/deleteByIdMarca/".$id;
+        var_dump(header("Location: ".$urlDeleteUsuario.""));
+      
+
         $sql = "DELETE FROM marca where id_marca = " .$id;
         $result = $conn->query($sql);
 
@@ -68,6 +76,8 @@ $app->delete('/api/marca/deleteById/{id}',function(Request $request,Response $re
         );
         
     }
+
+    exit();
     
 });
 

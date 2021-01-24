@@ -28,11 +28,20 @@ require '../src/routes/marca.php';
 
 //Modelo
 require '../src/routes/modelo.php';
-$app->run();
-
 
 // COLOR
 require '../src/routes/color.php';
+
+
+
+
+
+
+
+$app->run();
+
+
+
 
 ?>
 
