@@ -1,4 +1,4 @@
-<?php  header('Content-Type: charset=utf-8');
+<?php 
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
@@ -10,8 +10,6 @@ $app->get('/api/usuario/getUsuarios', function(Request $request, Response $respo
         
             $conn = $db->openConexionDB();
         
-        
-       
             $sql = "SELECT * FROM usuario";
         
             $result = $conn->query($sql);

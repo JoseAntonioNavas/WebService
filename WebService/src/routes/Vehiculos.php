@@ -3,8 +3,6 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-
-$app = new \Slim\App;
  
 
 //OBTENER TODOS LOS VEHICULOS 
@@ -81,7 +79,6 @@ $app->post('/api/vehiculos/getVehiculosBBDD',function(Request $request,Response 
     $db = new conexion();
     
     $conn = $db->openConexionDB();
-
 
     $ByIdVehiculo = $request->getParsedBody()['id_vehiculo'];
     $ByIdMarca = $request->getParsedBody()['id_marca'];
@@ -211,7 +208,6 @@ $app->delete('/api/vehiculos/deleteById/{id}',function(Request $request,Response
 
 $app->post('/api/vehiculos/new', function(Request $request, Response $response){
 
-    $validation = new Valida();
     $db = new Conexion();
     $conn = $db->openConexionDB();
             
@@ -312,36 +308,5 @@ $app->post('/api/vehiculos/new', function(Request $request, Response $response){
 
 });
 
-
-
-$app->delete('/api/vehiculos/deleteByModelo/{id}',function(Request $request,Response $response){
-
-    $db = new Conexion();
-    $conn = $db->openConexionDB();
-
-    $id = $request->getAttribute('id');
-
-    try {
-        $sql = "DELETE FROM vehiculo where id_modelo = " .$id;
-        $result = $conn->query($sql);
-
-        $myArray[] = array(
-            'status' => $response->getStatusCode(),
-            'msg' => "OK"
-        );
-        echo json_encode($myArray);
- 
-    } catch (\Throwable $th) {
-
-        $myArray[] = array(
-            'status' => $response->getStatusCode(),
-            'msg' => "Error al hacer la consulta"
-        );
-        echo json_encode($myArray);
-
-    }
-
-    $db->closeConexionDB($conn);
-});
 
 ?>
