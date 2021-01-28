@@ -5,12 +5,15 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 
 
-$app->get('/api/usuario/getUsuarios', function(Request $request, Response $response){
+$app->post('/api/usuario/getUsuarios', function(Request $request, Response $response){
             $db = new conexion();
-        
+
             $conn = $db->openConexionDB();
-        
-            $sql = "SELECT * FROM usuario";
+
+            $email = $request->getParsedBody()['email'];
+            $password = $request->getParsedBody()['passwd'];
+
+            $sql = "SELECT * FROM usuario WHERE email LIKE '%$email%' AND passwd LIKE '%$password%' ";
         
             $result = $conn->query($sql);
          
@@ -34,9 +37,7 @@ $app->get('/api/usuario/getUsuarios', function(Request $request, Response $respo
            $salidaJSON = json_encode($myArray);
          
            return $salidaJSON;
-          $db->closeConexionDB($conn);
-        
-        
+          $db->closeConexionDB($conn);     
 }); 
 
 
