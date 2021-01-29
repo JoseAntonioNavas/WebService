@@ -13,7 +13,7 @@ $app->post('/api/usuario/getUsuarios', function(Request $request, Response $resp
             $email = $request->getParsedBody()['email'];
             $password = $request->getParsedBody()['passwd'];
 
-            $sql = "SELECT * FROM usuario WHERE email LIKE '%$email%' AND passwd LIKE '%$password%' ";
+            $sql = "SELECT * FROM usuario WHERE email LIKE '%$email%' AND passwd LIKE '%$password%' ORDER BY email ASC";
         
             $result = $conn->query($sql);
          
@@ -39,79 +39,6 @@ $app->post('/api/usuario/getUsuarios', function(Request $request, Response $resp
            return $salidaJSON;
           $db->closeConexionDB($conn);     
 }); 
-
-
-$app->get('/api/usuario/getUsuarioById/{id}', function(Request $request, Response $response){
-            $db = new conexion();
-        
-            $conn = $db->openConexionDB();
-        
-        
-            $id = $request->getAttribute('id');
-            $sql = "SELECT * FROM usuario WHERE id_user = " .$id;
-        
-            $result = $conn->query($sql);
-         
-            if(mysqli_num_rows($result) == 0){
-         
-             $myArray = [];
-             
-            }else{
-         
-             while($row = mysqli_fetch_assoc($result)){
-                 $myArray[] = array(
-                     'id_user' => $row["id_user"],
-                     'email' => $row["email"],
-                     'passwd' => $row["passwd"],
-                 );
-             }
-         
-            }
-            
-            
-           $salidaJSON = json_encode($myArray);
-         
-           return $salidaJSON;
-          $db->closeConexionDB($conn);
-        
-        
-}); 
-
-
-$app->get('/api/usuario/getUsuarioByEmail/{email}', function(Request $request, Response $response){
-        $db = new conexion();
-    
-        $conn = $db->openConexionDB();
-    
-        $email = $request->getAttribute('email');
-        $sql = "SELECT * FROM usuario WHERE email =  '" . $email. "'";
-    
-        $result = $conn->query($sql);
-        if(mysqli_num_rows($result) == 0){
-     
-         $myArray = [];
-         
-        }else{
-     
-         while($row = mysqli_fetch_assoc($result)){
-             $myArray[] = array(
-                 'id_user' => $row["id_user"],
-                 'email' => $row["email"],
-                 'passwd' => $row["passwd"],
-             );
-         }
-     
-        }
-        
-        
-       $salidaJSON = json_encode($myArray);
-     
-       echo $salidaJSON;
-       
-      $db->closeConexionDB($conn);
-    
-    
-});
     
 
 $app->post('/api/usuario/new', function(Request $request,Response $response){
@@ -203,7 +130,7 @@ $app->delete('/api/usuario/deleteById/{id}' ,function (Request $request,Response
            //URL BORRAR DETALLE-USUARIO
            $urlDeleteUsuario = "http://localhost/vehiculosAPI/WebService/public/api/detalles-usuario/deleteByIdUser/".$id;
            var_dump(header("Location: ".$urlDeleteUsuario.""));
-           die();
+           
 
     } catch (\Throwable $th) {
 
@@ -217,7 +144,7 @@ $app->delete('/api/usuario/deleteById/{id}' ,function (Request $request,Response
     }
 
     $db->closeConexionDB($conn);
-
+    die();
 });
 
 
