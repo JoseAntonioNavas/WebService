@@ -6,11 +6,18 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
  
 
-$app->get('/api/detalles-usuario',function(Request $request, Response $response){
+$app->post('/api/detalles-usuario',function(Request $request, Response $response){
 
     $db = new conexion();
         
     $conn = $db->openConexionDB();
+
+    
+    // PARAMETROS DE BUSQUEDA
+    $ByNombre = $request->getParsedBody()['nombre'];
+    $id_rol = $request->getParsedBody()['id_rol'];
+
+    //$id_rol = intval($id_rol);
 
     $sql = "SELECT u.id_user,u.email,u.passwd,
     d.id_detalle_usuario,d.nick_user, d.nombre, d.apellido_1, d.apellido_2,
@@ -19,7 +26,11 @@ $app->get('/api/detalles-usuario',function(Request $request, Response $response)
     INNER JOIN detalles_usuario as d
     ON u.id_user = d.id_user
     INNER JOIN roles as r
-    ON r.id_rol = d.id_rol";
+    ON r.id_rol = d.id_rol
+    WHERE (d.nombre LIKE '%$ByNombre%' OR d.apellido_1 LIKE '%$ByNombre%' OR d.apellido_2 LIKE '%$ByNombre%' OR d.nick_user LIKE '%$ByNombre%' OR u.email LIKE '%$ByNombre%'
+    OR u.passwd LIKE '%$ByNombre%')
+    AND r.id_rol LIKE $id_rol 
+    ";
 
     $result = $conn->query($sql);
     
@@ -67,11 +78,6 @@ $app->get('/api/detalles-usuarioById/{id}',function(Request $request, Response $
 
     $id = $request->getAttribute('id');
 
-    // Validamos id
-    if(is_numeric($id) == false){
-        $id = -1;
-    }
-
     $sql = "SELECT u.id_user,u.email,u.passwd,
     d.id_detalle_usuario,d.nick_user, d.nombre, d.apellido_1, d.apellido_2,
     r.id_rol,r.nombre_rol
@@ -100,7 +106,7 @@ $app->get('/api/detalles-usuarioById/{id}',function(Request $request, Response $
                'usuario' => [
                    'id_user' => $row["id_user"],
                    'email' => $row["email"],
-                   'password' => $row["passwd"],
+                   'passwd' => $row["passwd"],
                ],
                'rol' => [
                    'id_rol' => $row["id_rol"],
