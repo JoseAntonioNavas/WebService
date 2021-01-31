@@ -5,16 +5,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
  
 
-//OBTENER TODOS LOS VEHICULOS 
-$app->get('/api/vehiculos/getVehiculos', function(Request $Request, Response $response){
 
-    $res  = file_get_contents('https://vpic.nhtsa.dot.gov/api/vehicles/GetAllMakes?format=JSON');
-    $objeto =  json_decode($res);
-    
-    echo json_encode($objeto->{'Results'});
-  
-
-});
 
 
 //OBTENER TODOS LOS modelo POR NOMBRE

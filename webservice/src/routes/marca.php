@@ -139,10 +139,19 @@ $app->post('/api/marca/new',function(Request $request,Response $response){
     
   
     $db->closeConexionDB($conn);
-})
+});
 
 
+//OBTENER TODOS LOS VEHICULOS 
+$app->get('/api/vehiculos/getAllMarcas', function(Request $Request, Response $response){
 
+    $res  = file_get_contents('https://vpic.nhtsa.dot.gov/api/vehicles/GetAllMakes?format=JSON');
+    $objeto =  json_decode($res);
+    echo json_encode($objeto->{'Results'});
+    //echo json_encode($objeto->{'Results'});
+  
+
+});
 
 
 ?>
