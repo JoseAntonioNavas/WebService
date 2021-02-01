@@ -13,12 +13,17 @@ $app->post('/api/marca/getMarcas',function(Request $request,Response $response){
     // PARAMETROS DE BUSQUEDA
 
     $ByNombreMarca = $request->getParsedBody()['nombre_marca'];
-    $ByIdMarca = $request->getParsedBody()['id_marca'];
+    $visible = $request->getParsedBody()['visible'];
 
-    $ByIdMarca = intval($ByIdMarca);
+    if($visible == "-1"){
+        $visible = "'%%'";
+    }else{
+        $visible = $visible;
+    }
+
 
     $sql = "SELECT * FROM marca  WHERE nombre_marca like '%$ByNombreMarca%' 
-    AND id_marca = $ByIdMarca";
+    AND visible = $visible";
 
     $result = $conn->query($sql);
 
@@ -32,6 +37,7 @@ $app->post('/api/marca/getMarcas',function(Request $request,Response $response){
                  $myArray[] = array(
                     'id_marca' => $row["id_marca"],
                     'nombre_marca' => $row["nombre_marca"],
+                    'visible' => $row["visible"],
                  );
              }
          

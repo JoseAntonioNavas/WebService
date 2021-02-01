@@ -37,6 +37,7 @@ $app->post('/api/detalles-usuario',function(Request $request, Response $response
     AND r.id_rol LIKE $consultRol
     ";
 
+
     $result = $conn->query($sql);
     if(mysqli_num_rows($result) == 0){
  
@@ -81,7 +82,8 @@ $app->get('/api/detalles-usuarioById/{id}',function(Request $request, Response $
     $conn = $db->openConexionDB();
 
     $id = $request->getAttribute('id');
-
+    
+   
     $sql = "SELECT u.id_user,u.email,u.passwd,
     d.id_detalle_usuario,d.nick_user, d.nombre, d.apellido_1, d.apellido_2,
     r.id_rol,r.nombre_rol
@@ -90,10 +92,11 @@ $app->get('/api/detalles-usuarioById/{id}',function(Request $request, Response $
     ON u.id_user = d.id_user
     INNER JOIN roles as r
     ON r.id_rol = d.id_rol
-    WHERE u.id_user = " .$id;
+    WHERE u.id_user = $id ";
+    var_dump($sql);
 
     $result = $conn->query($sql);
- 
+    
     if(mysqli_num_rows($result) == 0){
  
      $myArray = [];
