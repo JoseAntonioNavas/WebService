@@ -150,6 +150,44 @@ $app->post('/api/marca/new',function(Request $request,Response $response){
 });
 
 
+// EDITAR MARCA
+
+$app->put('/api/marca/update',function(Request $request,Response $response){
+    $db = new conexion();
+    $validation = new Valida();
+
+    $conn = $db->openConexionDB();
+
+    // OBJETO MODELO PASADO POR PARAMETROS
+  
+    $nombre_marca = $request->getParsedBody()['nombre_marca'];
+    $id_marca = $request->getParsedBody()['id_marca'];
+    $visible = $request->getParsedBody()['visible'];
+
+        $sql = "UPDATE marca 
+        SET visible = $visible
+        where  id_marca = $id_marca";
+            
+            try {
+                mysqli_query($conn,$sql);
+                
+                $myArray[] = array(
+                    'status' => $response->getStatusCode(),
+                    'msg' => "OK"
+                );
+                echo json_encode($myArray);
+    
+            } catch (\Throwable $th) {
+                $myArray[] = array(
+                    'status' => $response->getStatusCode(),
+                    'msg' => "Error al realizar la consulta"
+                );
+                echo json_encode($myArray);
+            }
+    $db->closeConexionDB($conn);
+});
+
+
 //OBTENER TODOS LOS VEHICULOS 
 $app->get('/api/vehiculos/getAllMarcas', function(Request $Request, Response $response){
 
